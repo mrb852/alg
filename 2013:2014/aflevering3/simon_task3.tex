@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\lstset{frame=tb,
+ language=Java,
+ aboveskip=3mm,
+ belowskip=3mm,
+ showstringspaces=false,
+ columns=flexible,
+ basicstyle={\small\ttfamily},
+ numbers=none,
+ numberstyle=\tiny\color{gray},
+ keywordstyle=\color{blue},
+ commentstyle=\color{dkgreen},
+ stringstyle=\color{mauve},
+ breaklines=true,
+ breakatwhitespace=true
+ tabsize=3
+}
+
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+
+\newenvironment{amatrix}[1]{%
+  \left(\begin{array}{@{}*{#1}{c}|c@{}}
+}{%
+  \end{array}\right)
+}
+
+{\setlength{\parindent}{0 cm}
+
+\title{Assignment 3 - AlgDat}
+\author{Simon Warg BCS315}
+
+\begin{document}
+\maketitle
+
+\section*{Task 1}
+\begin{algorithm}
+ \caption{CanDistribute}
+
+ \begin{algorithmic}
+   \For  {$i=1$ to $n-1$}
+        \State $distance = p_{i+1}-p_i$
+         \If{$b_i < \hat{b}$}
+                \State $b_{i+1} = b_{i+1}- (\hat{b}-b_i) - 2*distance$
+                \State $b_i = \hat{b}$
+        \EndIf
+         \If{$b_i > \hat{b}$}
+                \State $b_{i+1} = max(0, b_i - \hat{b} - 2*distance)$
+                \State $b_i = \hat{b}$
+        \EndIf
+   \EndFor \\
+\Return $b_n \geq \hat{b}$
+\end{algorithmic}
+\end{algorithm}
+
+\section*{Task 2}
+Hvis $b_1 < \hat{b}$, så vil den billigste, og dermed den beste, løsningen være at tage øl fra $b_2$. Hvis $b_2$ derefter får mindre end $\hat{b}$ øl så vil den endeste måde være at tage øl fra $b_3$. Det andet case; hvis $b_1 > \hat{b}$, så vil den beste løsningen være at sørge for at $b_2$ får så mange øl fra $b_1$ som mulig indtil $b_1 = \hat{b}$. Dermed gælder at for hver $b_i$ så er $b_1...b_{i-1} \leq \hat{b}$. Hvis den sidste bar $b_n \geq \hat{b}$ ved vi at alle barer kan have $\hat{b}$ øl.
+
+\section*{Task 3}
+\begin{algorithm}
+ \caption{Find maximum number of beer that can be distributed among all bars}
+
+ \begin{algorithmic}
+        \State $left = 0$
+        \State $right = B$
+   \While{$right-left > 1$}
+        \If{$CanDistribute(\floor*{\frac{right+left}{2}})$}
+                \State $left = \floor*{\frac{right+left}{2}}$
+        \Else
+                \State $right = \floor*{\frac{right+left}{2}}$
+        \EndIf
+\EndWhile
+\If{$CanDistribute(right)$}
+        \State \Return right
+\Else
+        \State \Return left
+\EndIf
+
+\end{algorithmic}
+\end{algorithm}
+
+Funktionen kører i $O(\log{B}) + O(n)$ fordi i hvert iteration så tjekkes det hvis maximum $m$, $0 < m < B$, i et søgområde der halveres efter hver iteration. Hver gang den søger i søgområdet bruger den $O(n)$ tid, altså kører funktion i $O(n\log B)$.
+
+Funktionen er korrekt siden den hver gang tjekker hvis maximum er under eller over $B/2$. Er den under så fortsætter den at undersøge om maximum er under eller over $B/2-B/4$, er den over så tjekker den hvis maximum er over eller under $B/2+B/4$ indtil søgområdet er kun to tal, hvor den tjekker begge for maximum.
+
+\end{document}

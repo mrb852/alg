@@ -1,0 +1,312 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{verbatim} % så man kan skrive ren tekst
+\usepackage[all]{xy} % den sidste (avancerede) formel i dokumentet
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{color}
+
+\title{Algoritmer ugeopgave 1\\Genaflevering af Task 2 og 4}
+\date{D. 20. Maj 2014}
+\author{Nicklas Warming Jacobsen \\Christian Enevoldsen\\Simon Warg \\Robert Rasmussen}
+
+\begin{document}
+\maketitle
+\newpage
+
+\section*{Task 1}
+\textbf{1: }For $p(n)=8p(n/2)+n^2$ gælder det at $p(n)=\Theta(n^3)$.
+Dette kan man se ved at bruge Theorem 4.1 case 1, hvor det skal gælde at for $\epsilon > 0$:
+\begin{flalign*}
+  f(n)&=O(n^{log_ba-\epsilon})
+\end{flalign*}
+$\epsilon$ bliver valgt til $\epsilon=1$
+\begin{flalign*}
+  n^2&=O(n^{log_28-1}) \Leftrightarrow n^2=O(n^2)
+  \Downarrow\\
+  p(n) &=  \Theta(n^{log_28})=\Theta(n^3)
+\end{flalign*}
+\textbf{2: }For $p(n)=8p(n/4)+n^3$ gælder det at $p(n)=\Theta(n^3)$.
+Dette kan man se ved at bruge Theorem 4.1 case 3, hvor det skal gælde at for $\epsilon > 0 \land c < 1$:
+\begin{flalign*}
+  f(n)&=\Omega(n^{log_ba+\epsilon}) \land a\cdot f(n/b) \leq c\cdot f(n)
+\end{flalign*}
+$\epsilon$ bliver valgt til $\epsilon=1,5$
+\begin{flalign*}
+  n^3&=\Omega(n^{log_48-15})\\
+  &\Updownarrow\\
+  n^3&=\Omega(n^3)
+\end{flalign*}
+Vi vælger $c=1/8$ og får:
+\begin{flalign*}
+  8\left(\frac{n}{4}\right)^3 &\leq \frac{1}{8}\cdot n^3\\
+  &\Updownarrow\\
+  8 \frac{n^3}{64} &\leq \frac{1}{8}\cdot n^3\\
+  &\Updownarrow\\
+  \frac{n^3}{8} &\leq \frac{n^3}{8}
+\end{flalign*}
+\textbf{3: }For  $p(n)=10p(n/9)+n\cdot log_2n$ gælder det at $p(n)=\Theta(n^{log_910}log_2n)\approx\Theta(n^{1,048}log_2n)$.
+Dette kan man se ved at bruge Theorem 4.1 case 3, hvor det skal gælde at:
+\begin{flalign*}
+  f(n)=\Theta(n^{log_ba})
+\end{flalign*}
+\begin{flalign*}
+  n\cdot log_2n&=\Theta(n^{log_910})\\
+  n\cdot log_2n&=\Theta(n^{1,048})
+\end{flalign*}
+
+\section*{Task 2}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+
+\newenvironment{amatrix}[1]{%
+  \left(\begin{array}{@{}*{#1}{c}|c@{}}
+}{%
+  \end{array}\right)
+}
+
+ {\setlength{\parindent}{0 cm}
+\subsection*{Opgave 1}
+Vi har $p(n)=p(\frac{n}{n})+p(\frac{n}{3})+n$, vi gætter at $P(n)=\Theta(cn)=\Theta(n)$.\\
+Vi viser upper-bound via substitutions metoden:
+\begin{flalign*}
+  p(n)&=p\left(\frac{n}{n}\right)+p\left(\frac{n}{3}\right)+n\\
+  &\leq\frac{cn}{2}+\frac{cn}{3}+n\\
+  &=\frac{3cn}{6}+\frac{2cn}{6}+n\\
+  &=\frac{5cn}{6}+n\\
+  &\leq cn
+\end{flalign*}
+Vi finder konstanten $c$:
+\begin{flalign*}
+  \frac{5cn}{6}+n &\leq cn\\
+  5cn+6n &\leq 6cn\\
+  5c+6 &\leq 6c\\
+  6 &\leq c
+\end{flalign*}
+På samme måde findes lower-bound:
+\begin{flalign*}
+  p(n)&=p\left(\frac{n}{n}\right)+p\left(\frac{n}{3}\right)+n\\
+  &\geq\frac{cn}{2}+\frac{cn}{3}+n\\
+  &=\frac{3cn}{6}+\frac{2cn}{6}+n\\
+  &=\frac{5cn}{6}+n\\
+  &\geq cn
+\end{flalign*}
+Vi finder konstanten $c$:
+\begin{flalign*}
+  \frac{5cn}{6}+n &\geq cn\\
+  5cn+6n &\geq 6cn\\
+  5c+6 &\geq 6c\\
+  6 &\geq c
+\end{flalign*}
+\subsection*{Opgave 2}
+Vi har at: $P(n)=\sqrt{n}\cdot p\left(\sqrt{n}\right)+\sqrt{n}$, vi gætter at $P(n)=\Theta(cn-1)=\Theta(n)$\\
+Vi viser upper-bound via substitutions metoden:
+\begin{flalign*}
+  P(n)&=\sqrt{n}\cdot p\left(\sqrt{n}\right)+\sqrt{n}\\
+  &\leq\sqrt{n}\cdot\left(c\sqrt{n}-1\right)+\sqrt{n}\\
+  &= cn-\sqrt{n}+\sqrt{n}\\
+  &= cn
+\end{flalign*}
+Vi har altså fundet at $P(n)=O(n)$ for $c > 0$.\\På samme måde finder vi lower-bound:
+\begin{flalign*}
+  P(n)&=\sqrt{n}\cdot p\left(\sqrt{n}\right)+\sqrt{n}\\
+  &\geq\sqrt{n}\cdot\left(c\sqrt{n}-1\right)+\sqrt{n}\\
+  &= cn-\sqrt{n}+\sqrt{n}\\
+  &= cn
+\end{flalign*}
+Vi har altså fundet at $P(n)=\Omega(n)$ for $c > 0$
+\subsection*{Opgave 3}
+Vi har at: $P(n)=2\cdot P\left(n-2\right)+n$, vi gætter at $P(n)=\Theta(2^{\frac{cn}{2}}-\frac{n}{2}$.
+Vi viser upper-bound via substitutions metoden:
+\begin{flalign*}
+  P(n)&=2\cdot P\left(n-2\right)+n\\
+  &\leq 2\cdot \left(2^{\frac{cn-2}{2}}-\frac{n}{2}\right)+n\\
+  &=2^{\frac{cn-2}{2}+1} -n + n\\
+  &=2^{\frac{cn}{2}}
+\end{flalign*}
+Vi har altsp fundet at $P(n)=O(n)$ for $c > 0$.\\På samme måde finder vi lower-bound:
+\begin{flalign*}
+  P(n)&=2\cdot P\left(n-2\right)+n\\
+  &\geq 2\cdot \left(2^{\frac{cn-2}{2}}-\frac{n}{2}\right)+n\\
+  &=2^{\frac{cn-2}{2}+1} -n + n\\
+  &=2^{\frac{cn}{2}}
+\end{flalign*}
+Vi har altså fundet at $P(n)=\Omega(n)$ for $c > 0$.
+\lstset{language=C}
+\section*{Task 3}
+
+Pseudocode for introsort \footnote{http://www.cs.rpi.edu/{\raise.17ex\hbox{$\scriptstyle\sim$}}musser/gp/introsort.ps}
+
+\begin{algorithm}
+\caption{Introsort}
+\label{alg1}
+
+\begin{algorithmic}
+\STATE Introsort(A, i, j)
+\STATE \	\	Introsort\_loop(A, i, j, 2 * Floor\_log(j-i)
+\STATE \	\	Insertion\_sort(A, i, j)
+\STATE
+\STATE Introsort\_loop(A, i, j, Counter)
+\WHILE{j-i >= 32}
+\IF{Counter = 0}
+\STATE Heapsort(A, i, j)
+\RETURN
+\ENDIF
+\STATE Counter := Counter - 1
+\STATE p := Partition(A, i, j, Median\_of\_3(A[i], A[i+(j-i)/2], A[j-1]))
+\STATE Introsort\_loop(A, p, j, Counter)
+\STATE j := p
+\ENDWHILE
+\end{algorithmic}
+
+\end{algorithm}
+
+\begin{comment}
+\begin{lstlisting}[frame=single]
+Introsort(A, i, j)
+	Introsort_loop(A, i, j, 2 * Floor_log(j-i)
+	Insertion_sort(A, i, j)
+	
+Introsort_loop(A, i, j, Counter)
+	while j-i >= 32
+		if Counter = 0
+			then Heapsort(A, i, j)
+				return
+		Counter := Counter - 1
+		p := Partition(A, i, j, Median_of_3(
+			A[i], A[i+(j-i)/2], A[j-1]))
+		Introsort_loop(A, p, j, Counter)
+		j := p
+\end{lstlisting}
+\end{comment}
+
+
+\section*{4}
+Da Partitioneringen køre i $O(n)$ tid, og bliver kørt samme antal gange som dybden på rekursionstræet som er $lg(n)$, så må worst-case for introsort være $O(n\cdot lg(n))$
+\section*{5}
+
+Heapsort er hurtig og effektiv. Den har værste tidsscenarie $\mathcal{O}(nlog(n))$, ligesom mergesort. Quicksort har værste tidsscenarie $\mathcal{O}(n^2)$. Heapsort foretrækkes på langsommere maskiner, da den kun skal bruge en konstant caching $\mathcal{O}(1)$ i modsætning til mergesort som bruger $\mathcal{O}(n)$. 
+
+\section*{6}
+
+Kørselstiden er godt nok $\mathcal{O}(n^2)$ for insertion sort i værste tilfælde. Til gengæld er den lineær altså, $\mathcal{O}(n)$ hvis den allerede er sorteret. Hvis den så næsten er sorteret vil det kun kræve få instruktioner, at sorterer den. Det er dog stadig en "langsom" algoritme, da den vil vokse lineært med n (i bedste tilfælde). Så hvis den er næsten sorteret men n er en googol ville andre alternativer måske være bedre.
+
+\newpage
+\section*{Exam outline ( Christian Enevoldsen )}
+
+\begin{enumerate}
+\item \textbf{Divide} \\\\
+\text{del problemet op i mindre delproblemer af samme type}
+\item \textbf{Conquor} \\\\løs delproblemet på en nem måde
+\item \textbf{Combine} \\\\Samle alle delløsninger til et endeligt resultat 
+\item Master theorem til rekursive ligninger (tid)
+\begin{enumerate}
+\item \textbf{Form} $T(n) = aT(n/b) + f(n), a \ge 1, b > 1$ 
+\item \textbf{Tilfælde 1} hvis $f(n) = \mathcal{O}(n^{log_b(a-\epsilon)}), \epsilon > 0  \rightarrow T(n) = \Theta(n^{log_b(a)})$ 
+\item \textbf{Tilfælde 2} hvis $f(n) = \Theta(n^{log_b(a)}) \rightarrow T(n) = \Theta(n^{log_b(a)}lg(n))$ 
+\item \textbf{Tilfælde 3} hvis $\Omega (n^{log_b(a+\epsilon)}), \epsilon > 0$ og $af(n/b) \le cf(n), c < 1$ så er $T(n) = \Theta(f(n))$
+\end{enumerate}
+\item \textbf{Mergesort forklaring}\\\\ 
+	Sæt at man har et rum fyldt af mennesker. Vi vil gerne sorterer dem efter højde ved brug af merge sortering. Alle stiller sig på en række og vi deler hermed rækken op i 2 rækker (venstre og højre).
+	Samme procedure gentages på venstre række indtil alle i den originale venstre række står alene. Nu tager vi 2 grupper (hvilke der kun er en i lige nu) og sætter dem sammen, ved at sorterer efter højden.
+	Samme procedurer gentages indtil vi kun har en gruppe tilbage. Nu er den originale venstre side sorteret. Samme sker nu for højre side og vi ender med at have 2 grupper som sættes sammen som i de små delopgaver.
+
+\end{enumerate}
+\newpage
+\section*{Exam subject outline - Nicklas Jacobsen qmr656}
+\textbf{Divide}: Split problemet i mindre problmer\\
+\textbf{Conquer}: Når problemerne er små nok, så løs dem på en triviel måde\\
+\textbf{Combine}: Kombinerer løsningerne til en stor løsning på det samlede problem
+\subsection*{Substitutions metode}
+Metoden består af 2 step:\\
+1: Gæt en løsning
+2: Matematisk induktions til bevis at løsningen er rigtig.
+$$
+T(n)=2T(n/2)+n
+$$
+Vi gætter $T(n)=O(n\cdot lg(n))$
+Vi substituerer ind:
+\begin{flalign*}
+  T(n) &\leq 2(c(n/2)lg(n/2))+n\\
+  &\leq cn\cdot lg(n/2)+n\\
+  &=cn\cdot lg(n)-cn\cdot lg(2)+n\\
+  &=cn\cdot lg(n)-cn+n\\
+  &\leq cn\cdot lg(n)
+\end{flalign*}
+Bemærk det kun gælder for $n>1$
+\subsection*{Master method}
+Hvis vi har en recurrence på følgende form:
+\begin{flalign*}
+  T(n)&=aT(n/b)+f(n)
+\end{flalign*}
+Så har har $T(n)$ følgende asymptotiske grænser.\\\\
+1: Hvis $f(n)=O(n^{log_ba-\epsilon})$ ved en konstant $\epsilon>0$, så er det ensbetydende med at $T(n)=\Theta(n^{log_ba})$\\\\
+2: Hvis $f(n)=\Theta(n^{log_ba})$, så $T(n)=\Theta(n^{log_ba}lg(n))$\\\\
+3: hvis $f(n)=\Omega(n^{log_ba+\epsilon})$ for en konstant $\epsilon>0$, og hvis $a\cdot f(n/b) \leq c\cdot f(n)$ for en konstant $c<1$, så $T(n)=\Omega(f(n))$
+\subsection*{Eksempel - Merge-sort}
+Merge-sort er en Divide-and-Conquer sorterings algoritme og foregår i $O(n\cdot lg(n)$ tid.
+Algoritmen deler listen af tal op rekursivt til mindre del-lister indtil del-listerne har ét element, og derved bliver anset som været sorteret.
+For hver del-liste samler (merger) algoritmen listerne til en større del-liste, ved linært at samligne elementerne i listerne. Når der kun er en del-liste tilbage, er listen sorteret.
+
+Merge-sort kan deles op i to del-algoritmer: 1. Merge som er $O(n)$ og 2. Divide som er $O(lg(n)$. Og den rekursive form er derved $T(n)=2(n/2)+n$.
+
+\section*{Divide and Conquer - Simon Warg}
+\subsection*{Divide into smaller problems}
+You can use D\&C whenever you have a problem that can be divided down to smaller size subproblems of the same kind as the main problem.
+
+\subsection*{Conquer}
+In this stage, we are solving each subproblem.
+
+\subsection*{Combine}
+After each subproblem has been solved, combine the subsolution until they have solved the main problem.
+
+\subsection*{Recurrences}
+For a D\&C problem, recurrence illustrates very well how you would for each iteration divide the problem, by calling the same function again with a new smaller sized problem, until you hit the base case where you start to solve and combine.
+
+\subsection*{MergeSort}
+MergeSort is a good example of D\&C how you for example could sort a set of numbers. Lets say you have n numbers of integers to be sorted. Begin by dividing the set into two new sets of size n/2 and keep dividing it until you are left with two problems of size 1. Since now each subproblem is a singleton, we can sort them two and combine it into one sorted set. Further, this sorted set will be combined with another sorted set and they are merged by comparing their elements with eachother.
+
+\section*{Exam outline - Robert S. Rasmussen - dfs207}
+
+\subsection*{Points}
+\begin{itemize}
+\item Divide
+\item Conquer
+\item Combine
+\item Master method
+\item Substitution method 
+\end{itemize}
+
+\subsection*{Problem Instance}
+A list of numbers from 8 to 1 and how merge sort handles these, also why it's the worst kind of list for merge sort.
+
+
+\end{document}
+

@@ -1,0 +1,200 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\lstset{frame=tb,
+ language=Java,
+ aboveskip=3mm,
+ belowskip=3mm,
+ showstringspaces=false,
+ columns=flexible,
+ basicstyle={\small\ttfamily},
+ numbers=none,
+ numberstyle=\tiny\color{gray},
+ keywordstyle=\color{blue},
+ commentstyle=\color{dkgreen},
+ stringstyle=\color{mauve},
+ breaklines=true,
+ breakatwhitespace=true
+ tabsize=3
+}
+
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+
+\newenvironment{amatrix}[1]{%
+  \left(\begin{array}{@{}*{#1}{c}|c@{}}
+}{%
+  \end{array}\right)
+}
+
+{\setlength{\parindent}{0 cm}
+
+\title{Assignment 4 - AlgDat\\Genaflevering}
+\date{06-06-2014}
+\author{Nicklas Warming Jacobsen \\Christian Enevoldsen\\Simon Warg \\Robert Rasmussen}
+
+\begin{document}
+\maketitle
+
+\section*{Task 1}
+\begin{algorithm}
+ \caption{Online incremental connectivity}
+ \begin{algorithmic}
+        \State  \Function{Make-Set}{x}
+        \State $x.parent = x$
+        \State $x.rank = 0$
+        \EndFunction
+
+        \State\Function{Find-Set}{x}
+        \If{$x.parent \neq x$}
+                \State x.parent = Find-Set(x.parent)
+        \EndIf
+        \State \Return x.parent
+        \EndFunction
+
+        \State \Function{Query}{x, y}
+        \State \Return Find-Set(x) == Find-Set(y)
+        \EndFunction
+
+        \State \Function{Link}{x, y}
+        \If{$x.rank < y.rank$}
+                \State $x.parent = y$
+        \Else
+                \State y.parent = x
+                \If{$x.rank == y.rank$}
+                        \State $x.rank = x.rank + 1$
+                \EndIf
+        \EndIf
+        \EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+\section*{Datastruktur}
+Datastrukturen for vores Online Incremental Connectivity graf gør brug af Path Compression metoden og Rank metoden, vi kan tillade os at bruge Path Compression  da det ikke bliver fjernet kanter i grafen. Ved Path compression bliver parent'en, hos de elementer der indgår i en Find-Path (dvs. også i Query), substitueret med dis-join sættets repræsentant, hvilket betyder at den næste query bliver hurtigerer hvis nolge af de samme elementer indgår. Rank metoden er en metode som forgår under Link og Make-Set operationenerne. Hver gang der laves et nyt dis-join set med ét element via Make-Set bliver rank for elementet sat til 0. Under Link operationen kan der ske to forskellige udfald: 1; I tilfælde af at de to elementer der skal linkes har samme rank, bliver et arbitrært element valgt, det valgte elements rank bliver sat én op og det andet elements parent bliver sat til det valgte element. 2; I tilfælde af at de to elementer der skal linkes ikke har samme rank, bliver elementet med størst rank sat som det andet elements parent.
+Ved at bruge Rank og Path Compression metoderne bliver køretiden for en operation $O(lg^*(n))$ og $\Omega(1)$.
+\newpage
+\section*{Task 2}
+\begin{algorithm}
+	\caption{CountComponents - Retunerer antallet af connected components i en graf G(V, E)} ~\\
+	V: En liste af trivielle sæt \\
+	E: En liste af tubler med to trivielle sæt som er forbundet i grafen G
+	\hrule
+	\begin{algorithmic}
+	\State \Function{CountComponents}{V, E}	
+		\State c = V.length()
+		\For{e in E}
+			\If{Not Query(e[0], [1])}
+				\State Link(e[0], e[1])
+				\State c = c-1
+			\EndIf
+		\EndFor
+		\For{v in V}
+			\Comment{Vi laver v'erne om til trivielle sæt igen}
+			\State Make-Set(v)
+		\EndFor
+		\State \Return c
+	\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\newpage
+\begin{algorithm}
+	\caption{MakeMatrix - laver en n*n relations matrise over unlink operationer, dvs. m[i][j] = 1 hvis der er en unlink operation mellem knude i og j} ~\\
+	n: er størrelsen af matrisen (antallet af knuder)
+	U: er en liste af tubler med to trivielle sæt som skal unlinkes (Unlink operationer)\\ \hrule
+	\begin{algorithmic}	
+	\State \Function{MakeMatrix}{n, U}
+		\State m[n][n];
+		\For{u in U}
+			\State m[u[0].val()][u[1].val()] = 1
+			\State m[u[1].val()][u[0].val()] = 1
+		\EndFor
+		\State \Return m
+	\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}
+	\caption{Unlinker - Retunerer antallet connected components efter hver unlink operation} ~\\
+	V: En liste af knuder (1,2,3\dots)\\
+	E: En liste af kanter, fx. ([1,2],[4,5]\dots )\\
+	U: En liste af kanter som skal unlinkes (Unlink operationer)\\ \hrule
+	\begin{algorithmic}
+		\State \Function{Unlinker}{V, E, U}
+			\For{v in V}
+				\State Make-Set(v)
+			\EndFor
+			\State m = MakeMatrix(V.length(), U)
+			\State c = CountComponents(V, E) - 1
+			\For{e in E}
+				\If{m[e[0].val()][e[1].val()] = 1 And Not Query(e[0], e[1])}
+					\State c = c +1	
+				\Else
+					\State Link(e[0], e[1])
+				\EndIf
+			\EndFor
+
+			\State R[] = c
+			\For{u in U.reversed()}
+				\If{Not Query(u[0],[1])}
+					\State Link(u[0], u[1])
+					\State c = c-1
+				\EndIf
+				\State R.push(c)
+			\EndFor
+			\State \Return R
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm} ~\\
+\newpage
+\section*{Task 3}
+\subsection*{Bevis forCountComponents}
+Vi ser på antallet af connected components i delgrafen G' af G(E, V). Hvor vi i hver iteration tilføjer en kant til G' fra G.
+Invariancen er at variable c er antallet af connected components i G'. 
+\subsubsection*{Initialization}
+Vi ser på delgrafen G' af G(V, E) uden nogle kanter, så vil antallet af knuder være lig antallet af connected components. c sættes derfor på linje 2 til længden af V.
+Invariancen holder derfor inden loop'ets start.
+\subsubsection*{Iteration}
+Hvis det gælder at de to knuder mellem kanten e, ikke er i samme component i G', må det gælde at $\{e\}\cup G'(E)$, har en mindre component end $G'$. Ved at tilføjde kanten til $G'$ og mindske $c$ med en, holder iterationen loop-invariancen.
+\subsubsection*{Termination}
+Iterationen stopper når vi har itereret over alle $e$ i $G(E)$ og derved tilføjet alle $e$ i $G(E)$ til $G'(E)$, og da $c$ er antallet af connected components i $G'$ må $c$ også være antallet af connected components i $G$.
+\subsection*{MakeMatrix}
+Funktioen laver en n*n relations matrise over unlink operationerne. Vi beviser ikke denne da den er triviel.
+\subsection*{Bevis for Unlinker}
+Funktionen består af to iterationer. Den første iteration konstruerer og tæller connected components efter alle $U_n$ unlink operationer af lavet på grafen $G$, den næste iteration finder antallet connected components efter $U_{n-i}$ unlink operationer
+\subsubsection*{Initialization 1}
+$c$ er antallet af connected components før unlink operationerne. Eftersom der er lavet $0$ unlink operationer før loopet, holder vores invariance.
+\subsubsection*{Iteration 1}
+Hvis $e_i$ er den eneste forbindelse mellem knuderne forbundet af $e_i$, så gælder det at  $G' = G(E, V\setminus\{e_i\})$ må have $c+1$ connected components 
+\subsubsection*{Termination 1}
+Loopet stopper når alle $e\in E$ er blevet blevet sammenholdt med $U$, og da vi har talt $c$ op når det gælder at $e\in U$ og der ikke eksistere andre veje til knuderne i mellem ved vi at $c$ er antallet af components i $G(V, E-U)$
+\subsubsection*{Initialization 2}
+Det gælder inden iterationen at $R=\{c\}$, hvilket er korrekt da $i=0$.
+\subsubsection*{Iteration 2}
+Hvis der ikke er nogle forbindelse mellem kanterne unlinket af $u_i$ i $G'$, så gælder det at $G'(V, \{u_i\}\cup E)$ må have $c-1$ connected components
+\subsubsection*{Termination 2}
+Loppet stopper når alle $u\in U$ er tilføjet til $G'$. det må derfor gælde ved terminering at $G'=G$ og alle $c_i$ for alle $i$ er fundet.
+\subsection*{Tidskompleks}
+\subsubsection*{CountComponents}
+Vi går ud fra at vi kan tælle V i linær tid, linje 2 tager derfor $O(n)$. På linje 3 til 8 er et loop der køre funktionerne Query $m$ gange og Link maks $m$ gange, loopet tager derfor $O(2m\cdot\alpha(n))$ hvilket også er $O(m\cdot\alpha(n))$. På linje 9 til 11 er et loop der køre $n$ gange og kalder funktionen Make-Set, som tager konstant tid, loopet tager derfor $O(n)$.\\
+Til sammen er tidskompleksen for funktionen $O(n+m\cdot\alpha(n)+n)$ hvilket også er $O(m\cdot\alpha(n))$
+\subsubsection*{MakeMatrix}
+Funktionen består af et loop der udføre konstant tid operationer, loopet køre maks $m$ gange. Tidskompleksen for funktionen er derfor $O(m)$.
+\subsubsection*{Unlinker}
+På linje 2 til 4 er et loop der køre $n$ gange, og udføre en konstanttids funktion, loopet tager derfor $O(n)$. Linje 5 kalder MakeMatrix som tager $O(m)$. Linje 6 kalder CountComponents der tager $O(m\cdot\alpha(n))$. Linje 7 til 13 er et loop der bliver kørt $m$, loopet slår op i en matrise i konstant tid, samt kalder funktionenerne Query og Link som begge tager $O(\alpha(n))$. loopet på linje 7 til 13 tager derfor $O(m\cdot\alpha(n))$. På linje 15 til 21 er et loop der bliver kørt $m$ gange. Loop på linje 15 til 21, kalder Query og Link som begge tager $O(\alpha(n))$, loopet tager defor $O(m\cdot\alpha(n))$.\\
+Tidskompleksen for hele funktionen er derfor: $O(n+m+m\cdot\alpha(n)+m\cdot\alpha(n)) = O(2(m\cdot\alpha(n))+m+n$, og da $m$ af asymptotisk mindre $m\cdot\alpha(n)$, og konstanter ikke har en betydning i store O notation, er tidskompleksen $$O(m\cdot\alpha(n)+n)$$
+\end{document}

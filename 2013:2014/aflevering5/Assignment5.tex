@@ -1,0 +1,142 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+ 
+\lstset{frame=tb,
+ language=Java,
+ aboveskip=3mm,
+ belowskip=3mm,
+ showstringspaces=false,
+ columns=flexible,
+ basicstyle={\small\ttfamily},
+ numbers=none,
+ numberstyle=\tiny\color{gray},
+ keywordstyle=\color{blue},
+ commentstyle=\color{dkgreen},
+ stringstyle=\color{mauve},
+ breaklines=true,
+ breakatwhitespace=true
+ tabsize=3
+}
+ 
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+ 
+\newenvironment{amatrix}[1]{%
+  \left(\begin{array}{@{}*{#1}{c}|c@{}}
+}{%
+  \end{array}\right)
+}
+ 
+{\setlength{\parindent}{0 cm}
+ 
+\title{Assignment 5 - AlgDat}
+\author{Simon Warg\\Nicklas Jacobsen\\Robert Rasmussen\\Christian Enevoldsen}
+ 
+\begin{document}
+\maketitle 
+
+\newpage
+\section*{Task 1}
+Vi beviser at et MST $T$ er en del af den oprinelige graf G ved hjælp af et modstridsbevis. Så vil vise at $T$ ikke nødvendigvis er en del af $G$. Antag at $T$ ikke er en del af $G$, således at der findes en kant $e$ i $T$ der ikke findes i mængden af kanterne $E$ i $G$. Men da $T$ er et MST så er det per definition en delmængde $T \subseteq E$. Vi ankommer således til et modstrid, og vores antagelse at $T \nsubseteq E$ må være falsk. Vi kan derfor konkludere at $T$ er en del af $G$.
+ 
+\section*{Task 2}
+Let $G$ be the original graph\\
+Let $H$ be a matrix of shortest path distance between breweries\\
+Let $MST$ be the graph created by Prim's Algorithm\\
+getEdge: retrieves a random edge of weight findSize from matrix m,
+  which is not in MST
+\begin{algorithm}
+ \caption{FindLastEdge}
+ \begin{algorithmic}
+	\Function{findLastEdge}{G, m, MST}
+		\State findSize = $G.weight - MST.weight$
+		\State lastEdge = getEdge(findSize, m, MST)
+		\State G2.add(lastEdge)
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\newpage
+\section*{Exame outline - MST - Nicklas W. Jacobsen}
+\subsection*{Definition af Minimum spanning tree}
+Et MST af en givet graf $G$, er en non-cyklisk del-graf $T$ som forbinder alle knuder i $G$, med andre ord er $T$ et træ som udspænder $G$.
+\subsection*{Dyrkning af en MST for en givet graf $G$}
+Hvis vi vil finde en MST af en givet graf $G=(V,E)$, med en vægt givet som $w : E \rightarrow \mathbb{R}$, definerer vi en $A$ som værende et sub-sæt af en eller anden MST for $G$.
+Herefter følger vi en grådig metode, hvor vi tilføjer en sikker kant til $A$,  en efter en indtil vi har en MST af $G$. Vi definerer en sikker kant for $A$, som værende en kant der ikke bryder invarianten.
+\begin{algorithm}
+ \caption{GENERIC-MST}
+ \begin{algorithmic}
+	\Function{GenericMST}{G, w}
+	\State $A = \emptyset$
+	\While{A does not form a MST, find an edge (u, v) this is safe for A}
+		\State $A = A \cup {(u,v)}$
+	\EndWhile
+	\State Return $A$
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\paragraph{Initialisering: } Efter linje 2, holder $A$ trivielt invarianten.
+\paragraph{Vedligeholdelse: } I hver iteration på linje 3 og 4, bliver invarianten holdt da det kun er sikre kanter der bliver tilføjet til $A$.
+\paragraph{Terminering: } Interationen stopper når $A$ er en MST af $G$, og $A$ bliver retuneret. Derfor må funktionen retunerer MST af $G$.
+\subsection*{Kruskal's algoritme}
+\begin{algorithm}
+ \caption{MST-KRUSTAL}
+ \begin{algorithmic}
+	\Function{MST-KRUSTAL}{G, w}
+	\State $A = \emptyset$
+	\For{each vertex $e \in G.V$}
+		Make-Set(v)
+	\EndFor
+	\State Sort G.E in ascending order by weight $w$
+	\For{each $(u,v) \in G.E$}
+		\If{Fïnd-Set(u) $\neq$ Find-Set(v)}
+			\State $A = A \cup {(u,v)}$
+			\State Union(u,v)
+		\EndIf
+	\EndFor
+	\State Return $A$
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+Algoritmen bruger ``dis-join`` datatype til at holde styr på hvorvidt om det sikkert at tilføje en kant til $A$. Hvis det ikke er forsætter den til næste kant
+\section*{Exam outline - Robert Rasmussen}
+\subsection*{points}
+\begin{itemize}
+\item What is Minimum Spanning Trees
+\item Prim's algorithm
+\item Kruskal's algorithm
+\end{itemize}
+
+\subsection*{Problem Instance}
+A weighted graph to run Prim's on.
+\section*{Exam outline - Christian Enevoldsen}
+\subsection *{Disposition}
+\begin{itemize}
+\item Definition
+\item Generisk Algoritme
+\item Prim's algoritme: Tidskompleksitet
+\item Kruskal's algoritme:  Tidskompleksitet
+\item Problem instans: Kruskal's algoritme paa en vaegtet graf.
+\end{itemize}
+\section*{Exam-outline - Simon Warg}
+\subsection*{Minimum spanning trees}
+A MST is a weighted tree $T$ containing the nodes $T.V$ of a graph $G = (V, E)$ and a subset of the graph's edges $T.E \subseteq G.E$ such that the sum of G's weight $\sum\limits_{(u,v) \in G.E} \omega{(u,v)}$ is minimized.
+
+\subsubsection*{Prim's algorithm}
+A MST can be optained by following Prim's algorithm. It maintains a priority queue $Q$  where all not-yet visited verticies resides. It then iterates Q until it's empty. Each iteration, it picks the edge with lowest edge connecting cut $T$ and $V - T$ and then add it to $T$.
+
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+ 
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+ 
+\begin{document}
+\begin{algorithm}
+\caption{Zig-zac}\label{euclid}
+\begin{algorithmic}[1]
+\State $a = (h_1, h_2,...h_n)$
+\State $s = (0, 0,...n)$
+\State $b = (1, 1,...n)$
+\For {i = 1 to n-1}
+\For {j = i - 1 down to 0}
+\State $s' = s_j$
+\State $b_i = \begin{cases}
+                b_j +1, & \mbox{if } s' = 0 \vee (s' < 0 \wedge a_i - a_j > 0) \vee (s' > 0 \wedge a_i - a_j < 0) \\
+                b_i, & \mbox{otherwise }  \\
+                \end{cases}$
+\State $s_i = \begin{cases}
+                a_i - a_j, & \mbox{if } s' = 0 \vee (s' < 0 \wedge a_i - a_j > 0) \vee (s' > 0 \wedge a_i - a_j < 0) \\
+                s_i, & \mbox{otherwise }  \\
+                \end{cases}$
+\EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+\end{document}

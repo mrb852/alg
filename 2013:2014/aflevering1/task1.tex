@@ -1,0 +1,54 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{verbatim} % så man kan skrive ren tekst
+\usepackage[all]{xy} % den sidste (avancerede) formel i dokumentet
+\usepackage{graphicx}
+
+\begin{document}
+
+\section*{Task 1}
+\textbf{1: }For $p(n)=8p(n/2)+n^2$ gælder det at $p(n)=\Theta(n^3)$.
+Dette kan man se ved at bruge Theorem 4.1 case 1, hvor det skal gælde at for $\epsilon > 0$:
+\begin{flalign*}
+  f(n)&=O(n^{log_ba-\epsilon})
+\end{flalign*}
+$\epsilon$ bliver valgt til $\epsilon=1$
+\begin{flalign*}
+  n^2&=O(n^{log_28-1}) \Leftrightarrow n^2=O(n^2)
+  \Downarrow\\
+  p(n) &=  \Theta(n^{log_28})=\Theta(n^3)
+\end{flalign*}
+\textbf{2: }For $p(n)=8p(n/4)+n^3$ gælder det at $p(n)=\Theta(n^3)$.
+Dette kan man se ved at bruge Theorem 4.1 case 3, hvor det skal gælde at for $\epsilon > 0 \land c < 1$:
+\begin{flalign*}
+  f(n)&=\Omega(n^{log_ba+\epsilon}) \land a\cdot f(n/b) \leq c\cdot f(n)
+\end{flalign*}
+$\epsilon$ bliver valgt til $\epsilon=1,5$
+\begin{flalign*}
+  n^3&=\Omega(n^{log_48-15})\\
+  &\Updownarrow\\
+  n^3&=\Omega(n^3)
+\end{flalign*}
+Vi vælger $c=1/8$ og får:
+\begin{flalign*}
+  8\left(\frac{n}{4}\right)^3 &\leq \frac{1}{8}\cdot n^3\\
+  &\Updownarrow\\
+  8 \frac{n^3}{64} &\leq \frac{1}{8}\cdot n^3\\
+  &\Updownarrow\\
+  \frac{n^3}{8} &\leq \frac{n^3}{8}
+\end{flalign*}
+\textbf{3: }For  $p(n)=10p(n/9)+n\cdot log_2n$ gælder det at $p(n)=\Theta(n^{log_910}log_2n)\approx\Theta(n^{1,048}log_2n)$.
+Dette kan man se ved at bruge Theorem 4.1 case 3, hvor det skal gælde at:
+\begin{flalign*}
+  f(n)=\Theta(n^{log_ba})
+\end{flalign*}
+\begin{flalign*}
+  n\cdot log_2n&=\Theta(n^{log_910})\\
+  n\cdot log_2n&=\Theta(n^{1,048})
+\end{flalign*}
+
+\end{document}

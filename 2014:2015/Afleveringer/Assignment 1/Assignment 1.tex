@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath} % flere matematikkommandoer
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc} % æøå
+\usepackage[T1]{fontenc} % mere æøå
+\usepackage[danish]{babel} % orddeling
+\usepackage{verbatim} % så man kan skrive ren tekst
+\usepackage[all]{xy} % den sidste (avancerede) formel i dokumentet
+\usepackage{graphicx}
+
+\renewcommand{\baselinestretch}{1.5} 
+
+\title{Algorithms Assignment 1}
+\author{Christian Enevoldsen\\MRB852\\}
+
+
+
+\begin{document}
+\maketitle
+
+\newpage
+\section{Master method}
+
+The master method can be applied to functions with form
+
+\[T(n) = aT(\frac{n}{b}) + f(n)\]
+
+Where 
+\[a \ge 1\]
+\[b \ge 2 \]
+
+The master method is applied to the following recurrences
+
+\begin{enumerate}
+\item $p(n) = 8p(n / 2) + n^2$
+\item $p(n) = 8p(n / 4) + n^3$
+\item $p(n) = 10p(n / 9) + n \log _2 n$
+\end{enumerate}
+
+For the 1st recurrence we have $\begin{cases}
+	a: 8 \\
+	b: 2 \\
+\end{cases} $
+
+Since $f(n) = n^2$ and $n^{\log _b a} = n^{\log _2 8} = n^3$ 
+there exists some constant $\epsilon = 4$ 
+
+such that   $ n^2 = O(n^{\log _b a - \epsilon}) \Rightarrow \underline{\underline{ p(n) \in \Theta(n^3)}}$\\\\
+
+For the 2nd recurrence we have $\begin{cases}
+	a: 8 \\
+	b: 4 \\
+	f(n): n^3
+\end{cases} $
+
+There exists a constant $\epsilon = 56$ such that $n^3 = \Omega (n^{\log _4 8 + \epsilon})$
+
+Since $af(n/b) \leq cf(n) \Leftrightarrow 8(n/4)^3 \leq cn^3$ we get $\underline{\underline{p(n) \in \Theta(n^3)}}$
+
+
+For the 3rd recurrence we have $\begin{cases}
+	a: 10 \\
+	b: 9 \\
+	f(n): n\log _2 n 
+\end{cases} $
+
+There exists a constant $\epsilon > 1$ such that $n\log _2 n = \Omega (n^{\log _9 10 + \epsilon})$
+
+Since $af(n/b) \leq cf(n) \Leftrightarrow 10\frac{n}{9}\log _2 \frac{n}{9} \leq cn\log _2 n$ we get $\underline{\underline{p(n) \in \Theta(n^{log_9 10})}}$
+
+\section{Substitution method}
+
+The substitution method is applied to the following recurrences
+
+\begin{enumerate}
+\item $p(n) = p(n/2) + p(n/3) + n$
+\item $p(n) = \sqrt{n} \cdot p(\sqrt{n}) + \sqrt{n}$
+\end{enumerate}
+
+We make a guess that the first recurrence has running time $O(n\log _2 n)$
+This can be done by either just guessing or with a recurrence tree. 
+The guess is done with a recurrence tree however the illustration is discarded
+in this report.
+
+
+
+\end{document}
